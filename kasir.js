@@ -302,6 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Render Order List
+  // Render Order List
   function renderOrderList() {
     if (Object.keys(orders).length === 0) {
       orderList.innerHTML = "No Menu Selected";
@@ -320,27 +321,33 @@ document.addEventListener("DOMContentLoaded", () => {
       subtotal += itemTotal;
 
       html += `
-  <div class="flex justify-between items-center mb-4" data-id="${order.id}">
-      <div class="flex-1">
-          <h3 class="font-semibold">${order.name}</h3>
-          ${
-            order.note
-              ? `<p class="text-sm text-gray-500 italic">${order.note}</p>`
-              : ""
-          }
-          <div class="flex items-center text-gray-500 text-sm">
-              <span>Rp ${order.price.toLocaleString()}</span>
-              <button class="edit-note-button ml-2" title="Edit Note">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-              </button>
-          </div>
-      </div>
-      ...
-  </div>
-`;
+            <div class="flex justify-between items-center mb-4" data-id="${
+              order.id
+            }">
+                <div class="flex-1">
+                    <h3 class="font-semibold">${order.name}</h3>
+                    ${
+                      order.note
+                        ? `<p class="text-sm text-gray-500 italic">${order.note}</p>`
+                        : ""
+                    }
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <span>Rp ${order.price.toLocaleString()}</span>
+                        <button class="edit-note-button ml-2" title="Edit Note">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button class="decrement-button px-2 py-1 bg-gray-200 rounded">-</button>
+                    <span class="text-gray-700">${order.quantity}</span>
+                    <button class="increment-button px-2 py-1 bg-gray-200 rounded">+</button>
+                </div>
+            </div>
+        `;
     }
 
     // Calculate tax and total
@@ -357,6 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(
       "total-price"
     ).textContent = `Rp ${total.toLocaleString()}`;
+
     // Add Event Listeners for Increment and Decrement Buttons
     const incrementButtons = document.querySelectorAll(".increment-button");
     const decrementButtons = document.querySelectorAll(".decrement-button");
