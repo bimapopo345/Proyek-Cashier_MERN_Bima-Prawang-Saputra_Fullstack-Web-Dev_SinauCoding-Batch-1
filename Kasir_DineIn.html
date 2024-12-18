@@ -472,10 +472,21 @@
                 tableNumberContainer.classList.add('hidden');
             });
 
+            // Update payButton click handler
             payButton.addEventListener('click', () => {
                 const customerName = customerNameInput.value.trim();
                 const tableNumber = tableNumberInput.value.trim();
+                const receivedAmount = parseInt(document.getElementById('custom-nominal').value) || 0;
 
+                // Calculate total
+                let subtotal = 0;
+                for (const key in orders) {
+                    subtotal += orders[key].price * orders[key].quantity;
+                }
+                const tax = Math.round(subtotal * 0.10);
+                const total = subtotal + tax;
+
+                // Validations
                 if (!customerName || (dineInButton.classList.contains('bg-blue-600') && !tableNumber)) {
                     showToast('Error', 'Please fill in customer name and table number', 'destructive');
                     return;
@@ -486,17 +497,89 @@
                     return;
                 }
 
-                // Simulate order placement
-                showToast('Success', 'Order placed successfully', 'success');
+                if (receivedAmount < total) {
+                    showToast('Error', 'Received amount is less than total', 'destructive');
+                    return;
+                }
 
-                // Reset form and orders
-                customerNameInput.value = '';
-                tableNumberInput.value = '';
-                orders = {};
-                renderOrderList();
-                updatePayButton();
+                // Show success modal
+                showSuccessModal(receivedAmount);
             });
 
+            function showSuccessModal(receivedAmount) {
+                const modal = document.getElementById('success-modal');
+                const subtotal = Object.values(orders).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = Math.round(subtotal * 0.10);
+                const total = subtotal + tax;
+                const change = receivedAmount - total;
+
+                // Generate order number and date
+                const orderNumber = 'ORD#' + Date.now().toString().slice(-8);
+                const orderDate = new Intl.DateTimeFormat('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                }).format(new Date());
+
+                // Update receipt content
+                document.getElementById('receipt-order-number').textContent = orderNumber;
+                document.getElementById('receipt-date').textContent = orderDate;
+                document.getElementById('receipt-customer').textContent = customerNameInput.value;
+                document.getElementById('receipt-type').textContent = dineInButton.classList.contains('bg-blue-600') ? 'Dine In' : 'Take Away';
+
+                // Update items
+                const receiptItems = document.getElementById('receipt-items');
+                receiptItems.innerHTML = Object.values(orders).map(item => `
+        <div class="flex justify-between mb-2">
+            <span>${item.quantity} x ${item.name}</span>
+            <span>Rp ${(item.price * item.quantity).toLocaleString()}</span>
+        </div>
+    `).join('');
+
+                // Update totals
+                document.getElementById('receipt-subtotal').textContent = `Rp ${subtotal.toLocaleString()}`;
+                document.getElementById('receipt-tax').textContent = `Rp ${tax.toLocaleString()}`;
+                document.getElementById('receipt-total').textContent = `Rp ${total.toLocaleString()}`;
+                document.getElementById('receipt-received').textContent = `Rp ${receivedAmount.toLocaleString()}`;
+                document.getElementById('receipt-change').textContent = `Rp ${change.toLocaleString()}`;
+
+                // Show modal
+                modal.classList.remove('hidden');
+
+                // Add close handlers
+                const closeBtn = document.getElementById('close-modal');
+                const printBtn = document.getElementById('print-struk');
+
+                function closeModal() {
+                    modal.classList.add('hidden');
+                    // Reset form
+                    customerNameInput.value = '';
+                    tableNumberInput.value = '';
+                    customNominalInput.value = '';
+                    orders = {};
+                    renderOrderList();
+                    updatePayButton();
+                }
+
+                closeBtn.onclick = closeModal;
+
+                printBtn.onclick = () => {
+                    showToast('Success', 'Printing receipt...', 'success');
+                    closeModal();
+                };
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+            }
             // Add to Order Function
             function addToOrder(item) {
                 if (orders[item.id]) {
@@ -621,8 +704,88 @@
                     sidebar.classList.add('hidden');
                 }
             });
+            const nominalButtons = document.querySelectorAll('.nominal-btn');
+            const customNominalInput = document.getElementById('custom-nominal');
+
+            nominalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const nominal = button.textContent.replace(/[^\d]/g, ''); // Ambil angka saja
+                    customNominalInput.value = nominal;
+                });
+            });
         });
     </script>
+    <!-- Tambahkan modal HTML sebelum tag penutup body -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-full max-w-md mx-4">
+            <div class="p-6">
+                <!-- Header with close button -->
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold text-center">Transaction Success</h3>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Receipt Content -->
+                <div class="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
+                    <div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>No Order</span>
+                            <span id="receipt-order-number"></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Order Date</span>
+                            <span id="receipt-date"></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Customer Name</span>
+                            <span id="receipt-customer"></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span id="receipt-type-label">Take Away</span>
+                            <span id="receipt-type"></span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-dashed pt-2" id="receipt-items">
+                        <!-- Items will be populated here -->
+                    </div>
+
+                    <div class="border-t border-dashed pt-2 space-y-1">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Sub Total</span>
+                            <span id="receipt-subtotal"></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Tax</span>
+                            <span id="receipt-tax"></span>
+                        </div>
+                        <div class="flex justify-between font-medium text-lg pt-2">
+                            <span>Total</span>
+                            <span id="receipt-total"></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600 pt-2">
+                            <span>Diterima</span>
+                            <span id="receipt-received"></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Kembalian</span>
+                            <span id="receipt-change"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Print Button -->
+                <button id="print-struk" class="w-full bg-blue-600 text-white py-3 rounded-lg mt-6 hover:bg-blue-700">
+                    Print Struk
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
