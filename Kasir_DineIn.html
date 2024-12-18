@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadiPos Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Optional: Importing Tailwind Forms Plugin for better form styling -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {},
+            },
+            plugins: [],
+        }
+    </script>
+</head>
+
+<body class="min-h-screen flex bg-gray-50">
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-5 right-5 flex flex-col space-y-2 z-50"></div>
+
+    <!-- Sidebar -->
+    <aside class="w-20 bg-white shadow-lg hidden md:block">
+        <div class="p-4 flex flex-col items-center">
+            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mb-8">
+                <span class="text-white text-lg font-bold">P</span>
+            </div>
+            <nav class="flex flex-col space-y-4">
+                <a href="#"
+                    class="flex items-center justify-center w-12 h-12 text-gray-700 hover:bg-gray-100 rounded-lg"
+                    title="Menu">
+                    <span class="text-xl">🍽️</span>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center w-12 h-12 text-gray-700 hover:bg-gray-100 rounded-lg"
+                    title="Orders">
+                    <span class="text-xl">📋</span>
+                </a>
+                <a href="#"
+                    class="flex items-center justify-center w-12 h-12 text-gray-700 hover:bg-gray-100 rounded-lg"
+                    title="Settings">
+                    <span class="text-xl">⚙️</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm p-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- Sidebar Trigger for Mobile -->
+                <button id="sidebar-toggle" class="md:hidden text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <!-- Hamburger Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <!-- Search Bar -->
+                <div class="relative w-64">
+                    <input type="text" id="search-input" placeholder="Enter keywords"
+                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 16l4-4-4-4m6 8l4-4-4-4" />
+                    </svg>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-600 hidden md:block">Order Archive</span>
+                <div class="w-8 h-8 rounded-full bg-gray-200"></div>
+                <button id="logout-button" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="flex-1 overflow-y-auto p-4">
+            <div class="container mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    <!-- Menu Section -->
+                    <div class="lg:col-span-3">
+                        <!-- Category Tabs -->
+                        <div class="flex space-x-4 mb-6 overflow-x-auto pb-2">
+                            <button
+                                class="px-6 py-2 rounded-full whitespace-nowrap bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 transition-colors duration-200">
+                                All Menu
+                            </button>
+                            <button
+                                class="px-6 py-2 rounded-full whitespace-nowrap bg-white text-gray-600 hover:bg-gray-50 border border-gray-300 active:bg-gray-100 transition-colors duration-200">
+                                Foods
+                            </button>
+                            <button
+                                class="px-6 py-2 rounded-full whitespace-nowrap bg-white text-gray-600 hover:bg-gray-50 border border-gray-300 active:bg-gray-100 transition-colors duration-200">
+                                Beverages
+                            </button>
+                            <button
+                                class="px-6 py-2 rounded-full whitespace-nowrap bg-white text-gray-600 hover:bg-gray-50 border border-gray-300 active:bg-gray-100 transition-colors duration-200">
+                                Dessert
+                            </button>
+                        </div>
+
+                        <!-- Menu Grid -->
+                        <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            <!-- Menu Items -->
+                            <!-- Contoh Menu Item -->
+                            <!-- Menu item akan diisi oleh JavaScript berdasarkan data -->
+                        </div>
+                    </div>
+
+                    <!-- Order Section -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-6">List Order</h2>
+
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <button id="dine-in-button"
+                                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg active:bg-blue-800 transition-colors duration-200">
+                                    Dine In
+                                </button>
+                                <button id="take-away-button"
+                                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-600 font-medium py-2 rounded-lg active:bg-gray-400 transition-colors duration-200">
+                                    Take Away
+                                </button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="customer-name" class="text-sm text-gray-600 block mb-2">Customer
+                                        Name</label>
+                                    <input type="text" id="customer-name" placeholder="Customer Name"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                                </div>
+
+                                <div id="table-number-container">
+                                    <label for="table-number" class="text-sm text-gray-600 block mb-2">No.Table</label>
+                                    <select id="table-number"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600">
+                                        <option value="">Select No Table</option>
+                                        <!-- Table Numbers -->
+                                        <!-- Dihasilkan oleh JavaScript -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="border-t pt-6">
+                                <div id="order-list" class="text-center text-gray-500">
+                                    No Menu Selected
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="pay-button"
+                            class="w-full mt-6 bg-gray-200 text-gray-600 hover:bg-gray-300 font-medium py-2 rounded-lg transition-colors duration-200">
+                            Pay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript untuk Interaktivitas -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar Toggle untuk Mobile
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.querySelector('aside');
+            sidebarToggle.addEventListener('click', (e) => {
+                e.stopPropagation(); // Mencegah event bubbling
+                sidebar.classList.toggle('hidden');
+            });
+
+            // Logout Button
+            const logoutButton = document.getElementById('logout-button');
+            logoutButton.addEventListener('click', () => {
+                showToast('Info', 'Logged out successfully', 'info');
+                // Redirect ke halaman login atau handle logout
+            });
+
+            // Toast Function
+            function showToast(title, message, type) {
+                const toastContainer = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                let icon;
+                let bgColor;
+
+                switch (type) {
+                    case 'success':
+                        icon = `<svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                               </svg>`;
+                        bgColor = 'bg-white';
+                        break;
+                    case 'destructive':
+                        icon = `<svg class="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                               </svg>`;
+                        bgColor = 'bg-white';
+                        break;
+                    case 'info':
+                        icon = `<svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                               </svg>`;
+                        bgColor = 'bg-white';
+                        break;
+                    default:
+                        icon = '';
+                        bgColor = 'bg-white';
+                }
+
+                toast.className = `max-w-xs w-full ${bgColor} shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`;
+
+                toast.innerHTML = `
+                    <div class="flex-1 w-0 p-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-0.5">
+                                ${icon}
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm font-medium text-gray-900">${title}</p>
+                                <p class="mt-1 text-sm text-gray-500">${message}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex border-l border-gray-200">
+                        <button class="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-gray-400 hover:text-gray-500 focus:outline-none">
+                            &times;
+                        </button>
+                    </div>
+                `;
+
+                // Close Toast
+                toast.querySelector('button').addEventListener('click', () => {
+                    toast.remove();
+                });
+
+                toastContainer.appendChild(toast);
+
+                // Automatically remove toast after 5 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 5000);
+            }
+
+            // Sample Menu Items
+            const menuItems = Array(12).fill(null).map((_, index) => ({
+                id: index + 1,
+                name: "Gado-gado Special",
+                description: "Vegetables, egg, tempe, tofu, kacang, peanut sauce, and tempeh",
+                price: 20000,
+                image: "https://via.placeholder.com/300x200.png?text=Gado-gado+Special",
+                category: "Food"
+            }));
+
+            // Render Menu Items
+            const menuGrid = document.getElementById('menu-grid');
+            function renderMenuItems(items) {
+                menuGrid.innerHTML = '';
+                if (items.length === 0) {
+                    menuGrid.innerHTML = '<p class="text-gray-500">No menu items found.</p>';
+                    return;
+                }
+                items.forEach(item => {
+                    const menuItem = document.createElement('div');
+                    menuItem.className = "bg-white rounded-lg shadow-sm overflow-hidden";
+                    menuItem.innerHTML = `
+                        <div class="relative">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-48 object-cover" />
+                            <span class="absolute top-2 left-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                                ${item.category}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg">${item.name}</h3>
+                            <p class="text-gray-500 text-sm mt-1">${item.description}</p>
+                            <div class="flex items-center justify-between mt-4">
+                                <span class="text-blue-600 font-medium">
+                                    Rp ${item.price.toLocaleString()}
+                                </span>
+                                <button class="text-gray-400 hover:text-gray-600 add-to-order-button" data-id="${item.id}" title="Add to Order">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    menuGrid.appendChild(menuItem);
+                });
+
+                // Add Event Listeners to "Add" Buttons
+                const addButtons = document.querySelectorAll('.add-to-order-button');
+                addButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const itemId = parseInt(button.getAttribute('data-id'));
+                        const item = menuItems.find(menuItem => menuItem.id === itemId);
+                        if (item) {
+                            addToOrder(item);
+                        }
+                    });
+                });
+            }
+
+            // Initial Render
+            renderMenuItems(menuItems);
+
+            // Category Filtering
+            const categoryButtons = document.querySelectorAll('.flex.space-x-4.mb-6 button');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active classes
+                    categoryButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-600', 'text-white');
+                        btn.classList.add('bg-white', 'text-gray-600', 'border', 'border-gray-300');
+                    });
+                    // Add active classes to clicked button
+                    button.classList.remove('bg-white', 'text-gray-600', 'border', 'border-gray-300');
+                    button.classList.add('bg-blue-600', 'text-white');
+
+                    const selectedCategory = button.textContent.trim();
+                    if (selectedCategory === "All Menu") {
+                        renderMenuItems(menuItems);
+                    } else {
+                        const filteredItems = menuItems.filter(item => item.category === selectedCategory.slice(0, -1));
+                        renderMenuItems(filteredItems);
+                    }
+                });
+            });
+
+            // Search Functionality
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.trim().toLowerCase();
+                const filteredItems = menuItems.filter(item =>
+                    item.name.toLowerCase().includes(query) ||
+                    item.description.toLowerCase().includes(query)
+                );
+                renderMenuItems(filteredItems);
+            });
+
+            // Populate Table Numbers
+            const tableNumberSelect = document.getElementById('table-number');
+            for (let i = 1; i <= 20; i++) {
+                const option = document.createElement('option');
+                option.value = String(i);
+                option.textContent = `Table ${i}`;
+                tableNumberSelect.appendChild(option);
+            }
+
+            // Handle Order Form
+            const dineInButton = document.getElementById('dine-in-button');
+            const takeAwayButton = document.getElementById('take-away-button');
+            const customerNameInput = document.getElementById('customer-name');
+            const tableNumberInput = document.getElementById('table-number');
+            const payButton = document.getElementById('pay-button');
+            const orderList = document.getElementById('order-list');
+            const tableNumberContainer = document.getElementById('table-number-container');
+
+            // Data Structure for Orders
+            let orders = {};
+
+            dineInButton.addEventListener('click', () => {
+                dineInButton.classList.add('bg-blue-600', 'text-white');
+                dineInButton.classList.remove('bg-gray-200', 'text-gray-600');
+                takeAwayButton.classList.add('bg-gray-200', 'text-gray-600');
+                takeAwayButton.classList.remove('bg-blue-600', 'text-white');
+
+                // Show No.Table field
+                tableNumberContainer.classList.remove('hidden');
+            });
+
+            takeAwayButton.addEventListener('click', () => {
+                takeAwayButton.classList.add('bg-blue-600', 'text-white');
+                takeAwayButton.classList.remove('bg-gray-200', 'text-gray-600');
+                dineInButton.classList.add('bg-gray-200', 'text-gray-600');
+                dineInButton.classList.remove('bg-blue-600', 'text-white');
+
+                // Hide No.Table field
+                tableNumberContainer.classList.add('hidden');
+            });
+
+            payButton.addEventListener('click', () => {
+                const customerName = customerNameInput.value.trim();
+                const tableNumber = tableNumberInput.value.trim();
+
+                if (!customerName || (dineInButton.classList.contains('bg-blue-600') && !tableNumber)) {
+                    showToast('Error', 'Please fill in customer name and table number', 'destructive');
+                    return;
+                }
+
+                if (Object.keys(orders).length === 0) {
+                    showToast('Error', 'No items in the order', 'destructive');
+                    return;
+                }
+
+                // Simulate order placement
+                showToast('Success', 'Order placed successfully', 'success');
+
+                // Reset form and orders
+                customerNameInput.value = '';
+                tableNumberInput.value = '';
+                orders = {};
+                renderOrderList();
+                updatePayButton();
+            });
+
+            // Add to Order Function
+            function addToOrder(item) {
+                if (orders[item.id]) {
+                    orders[item.id].quantity += 1;
+                } else {
+                    orders[item.id] = {
+                        ...item,
+                        quantity: 1
+                    };
+                }
+                renderOrderList();
+                updatePayButton();
+                // Hapus toast saat menambahkan item
+                // showToast('Success', `${item.name} added to order`, 'success');
+            }
+
+            // Render Order List
+            function renderOrderList() {
+                if (Object.keys(orders).length === 0) {
+                    orderList.innerHTML = 'No Menu Selected';
+                    return;
+                }
+
+                let html = '';
+                for (const key in orders) {
+                    const order = orders[key];
+                    html += `
+                        <div class="flex justify-between items-center mb-4" data-id="${order.id}">
+                            <div>
+                                <h3 class="font-semibold">${order.name}</h3>
+                                <p class="text-gray-500 text-sm">Rp ${order.price.toLocaleString()}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="decrement-button px-2 py-1 bg-gray-200 rounded">-</button>
+                                <span>${order.quantity}</span>
+                                <button class="increment-button px-2 py-1 bg-gray-200 rounded">+</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                orderList.innerHTML = html;
+
+                // Add Event Listeners for Increment and Decrement Buttons
+                const incrementButtons = document.querySelectorAll('.increment-button');
+                const decrementButtons = document.querySelectorAll('.decrement-button');
+
+                incrementButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const orderDiv = button.closest('div');
+                        const orderId = parseInt(orderDiv.getAttribute('data-id'));
+                        if (orders[orderId]) {
+                            orders[orderId].quantity += 1;
+                            renderOrderList();
+                            updatePayButton();
+                        }
+                    });
+                });
+
+                decrementButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const orderDiv = button.closest('div');
+                        const orderId = parseInt(orderDiv.getAttribute('data-id'));
+                        if (orders[orderId]) {
+                            orders[orderId].quantity -= 1;
+                            if (orders[orderId].quantity <= 0) {
+                                delete orders[orderId];
+                            }
+                            renderOrderList();
+                            updatePayButton();
+                        }
+                    });
+                });
+            }
+
+            // Update Pay Button Appearance
+            function updatePayButton() {
+                if (Object.keys(orders).length > 0) {
+                    payButton.classList.remove('bg-gray-200', 'text-gray-600');
+                    payButton.classList.add('bg-blue-600', 'text-white');
+                } else {
+                    payButton.classList.remove('bg-blue-600', 'text-white');
+                    payButton.classList.add('bg-gray-200', 'text-gray-600');
+                }
+            }
+
+            // Add Event Listeners to Sidebar Menu Items
+            const sidebarMenuButtons = document.querySelectorAll('aside nav ul li a');
+            sidebarMenuButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const title = button.getAttribute('title');
+                    showToast('Info', `${title} page is under construction`, 'info');
+                });
+            });
+
+            // Sidebar Responsive Toggle (Click outside to close)
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
