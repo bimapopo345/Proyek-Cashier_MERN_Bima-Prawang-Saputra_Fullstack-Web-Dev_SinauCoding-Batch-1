@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - PadiPos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Optional: Tailwind Forms Plugin for better form styling -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {},
+            },
+            plugins: [],
+        }
+    </script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-5 right-5 flex flex-col space-y-2 z-50"></div>
+
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
+        <!-- Logo and Title -->
+        <div class="flex items-center justify-center gap-2 mb-8">
+            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <span class="text-white text-lg font-bold">P</span>
+            </div>
+            <span class="text-xl font-semibold text-gray-900">PadiPos</span>
+        </div>
+
+        <h2 class="text-2xl text-center font-bold text-gray-900 mb-2">
+            Welcome Back!
+        </h2>
+        <p class="text-gray-500 text-sm mb-8 text-center">
+            Create your account here!
+        </p>
+
+        <form id="create-account-form" class="space-y-6">
+            <div class="space-y-4">
+                <!-- Username Field -->
+                <div class="space-y-2">
+                    <label for="username" class="text-sm font-medium text-gray-700 block">
+                        Username
+                    </label>
+                    <input id="username" type="text" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Username" />
+                </div>
+
+                <!-- Email Field -->
+                <div class="space-y-2">
+                    <label for="email" class="text-sm font-medium text-gray-700 block">
+                        Email
+                    </label>
+                    <input id="email" type="email" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Email" />
+                </div>
+
+                <!-- Password Field -->
+                <div class="space-y-2">
+                    <label for="password" class="text-sm font-medium text-gray-700 block">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <input id="password" type="password" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
+                            placeholder="Password" />
+                        <button type="button" id="toggle-password"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <!-- Eye Icon (Show Password) -->
+                            <svg id="eye-icon" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.267-2.943-9.542-7z" />
+                            </svg>
+                            <!-- EyeOff Icon (Hide Password) -->
+                            <svg id="eye-off-icon" class="h-5 w-5 hidden" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.083-2.803M9.88 9.88a3 3 0 104.242 4.242M9.88 9.88L19.5 19.5" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="space-y-2">
+                    <label for="confirmPassword" class="text-sm font-medium text-gray-700 block">
+                        Confirm Password
+                    </label>
+                    <div class="relative">
+                        <input id="confirmPassword" type="password" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
+                            placeholder="Confirm Password" />
+                        <button type="button" id="toggle-confirm-password"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
+                            <!-- Eye Icon (Show Password) -->
+                            <svg id="eye-confirm-icon" class="h-5 w-5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.267-2.943-9.542-7z" />
+                            </svg>
+                            <!-- EyeOff Icon (Hide Password) -->
+                            <svg id="eye-off-confirm-icon" class="h-5 w-5 hidden" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.083-2.803M9.88 9.88a3 3 0 104.242 4.242M9.88 9.88L19.5 19.5" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reset Password Button -->
+            <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 text-base font-medium rounded-xl transition duration-200">
+                Create Account
+            </button>
+
+            <!-- Login Link -->
+            <p class="text-center text-sm text-gray-500">
+                Already have an account?
+                <a href="/login.html" class="text-blue-600 hover:text-blue-700 font-medium">
+                    Login
+                </a>
+            </p>
+        </form>
+    </div>
+
+    <!-- JavaScript for Form Handling, Password Toggle, and Toasts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('create-account-form');
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const toastContainer = document.getElementById('toast-container');
+
+            const togglePasswordButton = document.getElementById('toggle-password');
+            const eyeIcon = document.getElementById('eye-icon');
+            const eyeOffIcon = document.getElementById('eye-off-icon');
+
+            const toggleConfirmPasswordButton = document.getElementById('toggle-confirm-password');
+            const eyeConfirmIcon = document.getElementById('eye-confirm-icon');
+            const eyeOffConfirmIcon = document.getElementById('eye-off-confirm-icon');
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const username = usernameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                const confirmPassword = confirmPasswordInput.value.trim();
+
+                if (!username || !email || !password || !confirmPassword) {
+                    showToast('Error', 'Please fill in all fields', 'destructive');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showToast('Error', 'Passwords do not match', 'destructive');
+                    return;
+                }
+
+                // Simulate account creation logic (e.g., API call)
+                // Di sini, kita akan mengasumsikan akun berhasil dibuat
+                showToast('Success', 'Account created successfully', 'success');
+
+                // Optionally, clear the input
+                usernameInput.value = '';
+                emailInput.value = '';
+                passwordInput.value = '';
+                confirmPasswordInput.value = '';
+            });
+
+            // Toggle Password Visibility for Password
+            togglePasswordButton.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                // Toggle Icons
+                eyeIcon.classList.toggle('hidden');
+                eyeOffIcon.classList.toggle('hidden');
+            });
+
+            // Toggle Password Visibility for Confirm Password
+            toggleConfirmPasswordButton.addEventListener('click', () => {
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
+
+                // Toggle Icons
+                eyeConfirmIcon.classList.toggle('hidden');
+                eyeOffConfirmIcon.classList.toggle('hidden');
+            });
+
+            /**
+             * Function to display toast notifications
+             * @param {string} title - Title of the toast
+             * @param {string} message - Description/message of the toast
+             * @param {string} type - Type of toast ('success', 'destructive', 'info')
+             */
+            function showToast(title, message, type) {
+                const toast = document.createElement('div');
+                let icon;
+                let bgColor;
+
+                switch (type) {
+                    case 'success':
+                        icon = `<svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                               </svg>`;
+                        bgColor = 'bg-white';
+                        break;
+                    case 'destructive':
+                        icon = `<svg class="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                               </svg>`;
+                        bgColor = 'bg-white';
+                        break;
+                    case 'info':
+                        icon = `<svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                               </svg>`;
+                        bgColor = 'bg-white';
+                        break;
+                    default:
+                        icon = '';
+                        bgColor = 'bg-white';
+                }
+
+                toast.className = `max-w-xs w-full ${bgColor} shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`;
+
+                toast.innerHTML = `
+                    <div class="flex-1 w-0 p-4">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-0.5">
+                                ${icon}
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm font-medium text-gray-900">${title}</p>
+                                <p class="mt-1 text-sm text-gray-500">${message}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex border-l border-gray-200">
+                        <button class="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-gray-400 hover:text-gray-500 focus:outline-none">
+                            &times;
+                        </button>
+                    </div>
+                `;
+
+                // Add event listener to close button
+                toast.querySelector('button').addEventListener('click', () => {
+                    toast.remove();
+                });
+
+                toastContainer.appendChild(toast);
+
+                // Automatically remove toast after 5 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+
+</html>
